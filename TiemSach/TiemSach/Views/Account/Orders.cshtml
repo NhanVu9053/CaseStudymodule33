@@ -1,0 +1,94 @@
+﻿@model List<TiemSach.ViewModel.OrderViewModel.OrderDetailViewModel>
+@{
+    ViewBag.Title = "Danh sách đơn hàng"; ;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<table class="table table-hover table-responsive table-bordered display w-100 d-block d-md-table" id="orders">
+    <thead>
+        <tr class="thead-dark">
+            <th>ID</th>
+            <th>Trạng thái</th>
+            <th>Sản phẩm</th>
+            <th>Giá</th>
+            <th>Ngày đặt hàng</th>
+            <th>Ngày giao / huỷ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var order in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Order" asp-action="OrderDetail" asp-route-id="@order.OrderId">@order.OrderId</a>
+                    </td>
+                    <td>
+                        @{
+                            var statusName = string.Empty;
+                            switch (order.OrderStatus)
+                            {
+                                case OrderStatus.Pending:
+                                    statusName = "Đợi xử lý";
+                                    break;
+                                case OrderStatus.Processing:
+                                    statusName = "Đang xử lý";
+                                    break;
+                                case OrderStatus.Completed:
+                                    statusName = "Đã hoàn thành";
+                                    break;
+                                default:
+                                    statusName = "Đã huỷ";
+                                    break;
+                            }
+                        }
+                        @statusName
+                    </td>
+                    <td>
+                        <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@order.ProductId">
+                            @order.ProductName
+                        </a>
+                    </td>
+                    <td>
+                        @order.ProductPrice.ToString("#,##0")
+                    </td>
+                    <td>
+                        @order.OrderTime.ToString("dd/MM/yyyy hh:mm tt")
+                    </td>
+                    <td>
+                        @if (order.OrderStatus == OrderStatus.Completed || order.OrderStatus == OrderStatus.Canceled)
+                        {
+                            @order.CompleteTime.ToString("dd/MM/yyyy hh:mm tt")
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section datatablejs{
+    <environment include="Development">
+        <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    </environment>
+    <script>
+        $(document).ready(function() {
+            $('#orders').DataTable();
+        });
+    </script>
+}
+
+@section datatablecss{
+    <environment include="Development">
+        <link href="~/lib/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+

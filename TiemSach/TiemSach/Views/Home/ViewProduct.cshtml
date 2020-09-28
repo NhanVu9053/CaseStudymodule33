@@ -1,0 +1,123 @@
+﻿@inject AppDbContext context
+@model TiemSach.ViewModel.ProductDetailViewModel
+@{
+    ViewData["Title"] = "ViewProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var categories = ViewBag.Categories as List<Category>;
+
+    var categorie = ViewBag.Category;
+    var images = ViewBag.Images as List<Image>;
+    var relatedProducts = ViewBag.RelatedProducts as IEnumerable<Product>;
+    ViewBag.Title = $"{Model.CategoryName} - {Model.Name} ";
+}
+
+<div class="row"style="font-family:'Bookman Old Style'" >
+    <h2>@ViewBag.Title</h2>
+    @if (User.IsInRole("Admin"))
+    {
+        <div>
+            &nbsp;
+            <a asp-controller="ProductsManager" asp-action="Edit" asp-route-id="@Model.ProductId">
+                <i class="fas fa-edit"></i>
+            </a>
+        </div>
+    }
+</div>
+<div class="row" style="font-family:'Times New Roman'">
+    <div class="col-md-5 text-center my-auto">
+        @{
+            if (images.Count != 0)
+            {
+                <div>
+                    <a href="~/images/products/@images[0].ImageName" data-toggle="lightbox" data-gallery="productImages" data-title="@Model.Name hình 1">
+                        <img src="~/images/products/@images[0].ImageName" class="img-fluid my-3" style="max-height: 350px; max-width: 100%" />
+                    </a>
+                </div>
+                <div class="row">
+                    <div class="mx-auto">
+                        @for (var i = 1; i < images.Count; i++)
+                        {
+                            <a class="my-2 mx-1" href="~/images/products/@images[i].ImageName" data-toggle="lightbox" data-gallery="productImages" data-title="@Model.Name hình @(i + 1)">
+                                <img src="~/images/products/@images[i].ImageName" height="60" />
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="col-md-7">
+        <div class="row">
+            <div class="col-md-7">
+                <h3 class="text-danger my-3">@Model.Price.ToString("#,##0") ₫</h3>
+
+            </div>
+            <div class="col-md-5 text-center my-3">
+                @{
+                    if (Model.Remain != 0)
+                    {
+                        <a class="btn btn-warning p-3" asp-controller="Order" asp-action="Buy" asp-route-id="@Model.ProductId">MUA NGAY! <i class="fas fa-cart-plus"></i></a>
+                    }
+                    else
+                    {
+                        <div class="btn btn-secondary p-3">Hết hàng!</div>
+                    }
+                }
+            </div>
+        </div>
+        <h4>Thông tin sách :</h4>
+        <hr />
+        <div class="row">
+            <div class="col-5">
+                Tác giả
+            </div>
+            <div class="col-7">
+                @Model.publisher
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-5">
+                Ngày xuất bản
+            </div>
+            <div class="col-7">
+                @Model.DoP.ToString("dd/mm/yyyy")
+            </div>
+        </div>
+        <hr />
+
+    </div>
+</div>
+<div class="row my-3" >
+    <div class="col-xl-8 col-lg-7 mb-3 full-description" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
+        @Html.Raw(Model.Description)
+    </div>
+</div>
+
+@section lightboxjs{
+    <environment include="Development">
+        <script src="~/lib/ekko-lightbox/ekko-lightbox.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
+    </environment>
+    <script>
+        $(document).on('click',
+            '[data-toggle="lightbox"]',
+            function (event) {
+                event.preventDefault();
+                $(this).ekkoLightbox();
+            });
+    </script>
+}
+
+@section lightboxcss{
+    <environment include="Development">
+        <link href="~/lib/ekko-lightbox/ekko-lightbox.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet" />
+    </environment>
+}
+

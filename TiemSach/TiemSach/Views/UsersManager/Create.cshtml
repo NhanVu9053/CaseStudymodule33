@@ -1,0 +1,151 @@
+﻿@model TiemSach.ViewModel.UserViewModel.RegisterViewModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var roles = ViewBag.Roles as IQueryable<Microsoft.AspNetCore.Identity.IdentityRole>;
+}
+
+<h1>Create</h1>
+<form class="form-signin" enctype="multipart/form-data" asp-controller="UsersManager" asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-label-group">
+        <img id="profilePicture" src="" width="200" style="display: none;" class="mx-auto d-block my-3" />
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="ImageFile">Ảnh đại diện: </label>
+        </div>
+        <div class="col-md-9">
+            <input type="file" class="custom-file-input selectImage mx-1" asp-for="ImageFile" id="i_file">
+            <label class="custom-file-label selectImage mx-2" asp-for="ImageFile">Ảnh đại diện</label>
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Name">Tên thành viên: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Name" class="form-control" placeholder="Nhập tên thành viên">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Email">Email: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Email" class="form-control" placeholder="Nhập email">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Address">Địa chỉ: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Address" class="form-control" placeholder="Nhập địa chỉ">
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="PhoneNumber">Số điện thoại: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-label-group row">
+        <div class="col-3">
+            Giới tính:
+        </div>
+        <div class="col-9">
+            <div>
+                @Html.RadioButtonFor(s => s.Gender, TiemSach.Models.UserModel.Gender.Male) @Html.Label("Nam")
+            </div>
+            <div>
+                @Html.RadioButtonFor(s => s.Gender, TiemSach.Models.UserModel.Gender.Female) @Html.Label("Nữ")
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="RoleId">Vai trò: </label>
+        </div>
+        <div class="col-md-9">
+            <select asp-for="RoleId" class="custom-select">
+                <option value="">Chọn vai trò</option>
+                @if (roles != null && roles.Any())
+                {
+                    foreach (var role in roles)
+                    {
+                        <option value="@role.Id">@role.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Password">Mật khẩu: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Password" class="form-control" placeholder="Nhập mật khẩu">
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="ConfirmPassword">Xác nhận mật khẩu: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="ConfirmPassword" class="form-control" placeholder="Xác nhận mật khẩu">
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9">
+            <button class="btn btn-primary" type="submit">Tạo tài khoản</button>
+            <button class="btn btn-secondary" asp-controller="UsersManager" asp-action="Index">Hủy</button>
+        </div>
+    </div>
+</form>
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+
+@section Scripts{
+    <script>
+        $(".custom-file-input").on("change",
+            function() {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        $('#i_file').change(function(event) {
+            $("#profilePicture").fadeIn("fast").attr('src', URL.createObjectURL(event.target.files[0]));
+        });
+    </script>
+}

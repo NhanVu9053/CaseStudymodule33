@@ -1,0 +1,156 @@
+﻿@model TiemSach.ViewModel.UserViewModel.EditUserViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var roles = ViewBag.Roles as IQueryable<Microsoft.AspNetCore.Identity.IdentityRole>;
+}
+
+<form class="form-signin" enctype="multipart/form-data" asp-controller="UsersManager" asp-action="Edit" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input hidden asp-for="UserId" value="@Model.UserId" />
+    <input hidden asp-for="ProfilePicture" value="@Model.ProfilePicture" />
+    <div class="form-label-group">
+        <img id="profilePicture" src="@(!string.IsNullOrEmpty(Model.ProfilePicture) ? $"/images/users/{Model.ProfilePicture}" : "/images/users/0.png")" width="100" style="display: none;" class="mx-auto d-block my-3" />
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="ImageFile">Ảnh đại diện: </label>
+        </div>
+        <div class="col-md-9">
+            <input type="file" class="custom-file-input selectImage mx-1" asp-for="ImageFile" id="i_file">
+            <label class="custom-file-label selectImage mx-2" asp-for="ImageFile">Đổi ảnh đại diện</label>
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Name">Tên thành viên: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Name" class="form-control" placeholder="Đổi tên thành viên">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Email">Email: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Email" class="form-control" placeholder="Đổi email">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Address">Địa chỉ: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Address" class="form-control" placeholder="Đổi địa chỉ">
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="PhoneNumber">Số điện thoại: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="PhoneNumber" class="form-control" placeholder="Đổi số điện thoại">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-label-group row">
+        <div class="col-3">
+            Giới tính:
+        </div>
+        <div class="col-9">
+            <div>
+                @Html.RadioButtonFor(s => s.Gender, TiemSach.Models.UserModel.Gender.Male) @Html.Label("Nam")
+            </div>
+            <div>
+                @Html.RadioButtonFor(s => s.Gender, TiemSach.Models.UserModel.Gender.Female) @Html.Label("Nữ")
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="RoleId">Vai trò: </label>
+        </div>
+        <div class="col-md-9">
+            <select asp-for="RoleId" class="custom-select">
+                <option value="">Chọn vai trò</option>
+                @if (roles != null && roles.Any())
+                {
+                    foreach (var role in roles)
+                    {
+                        <option value="@role.Id" selected="@(role.Id == Model.RoleId)">@role.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9">
+            <button class="btn btn-primary" type="submit">Lưu</button>
+            <button type="button" class="btn btn-danger mx-2" data-toggle="modal" data-target="#removeUserModal">
+                Xoá
+            </button>
+            <button class="btn btn-secondary" asp-controller="UsersManager" asp-action="Index">Hủy</button>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="removeUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xóa thành viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn xóa thành viên này khỏi hệ thống?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                <a asp-controller="UsersManager" asp-action="Remove" asp-route-id="@Model.UserId" class="btn btn-danger">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+
+@section Scripts{
+    <script>
+        $(".custom-file-input").on("change",
+            function() {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        $('#i_file').change(function(event) {
+            $("#profilePicture").fadeIn("fast").attr('src', URL.createObjectURL(event.target.files[0]));
+        });
+    </script>
+}
+

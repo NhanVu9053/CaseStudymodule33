@@ -1,0 +1,111 @@
+﻿@model RegisterViewModel
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var product = ViewBag.Product as Product;
+}
+
+@if (product != null)
+{
+    <h4 class="alert alert-success">Sản phẩm đặt hàng: <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" target="_blank" class="alert-link">@product.Name</a></h4>
+}
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="card card-signin my-5">
+            <div class="card-body rounded bg-light">
+                <div class="text-center mb-5">
+                    <h3 class="card-title">@ViewBag.Title</h3>
+                </div>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <form class="form-signin" enctype="multipart/form-data" asp-controller="Account" asp-action="Register" method="post">
+                    <input hidden asp-for="ProductId" value="@ViewBag.ProductId" />
+                    <div class="form-label-group">
+                        <img id="profilePicture" src="" width="200" style="display: none;" class="mx-auto d-block" />
+                    </div>
+
+                    <div class="form-label-group custom-file">
+                        <input type="file" class="custom-file-input selectImage" asp-for="ImageFile" id="i_file">
+                        <label class="custom-file-label selectImage" asp-for="ImageFile">Ảnh đại diện</label>
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group">
+                        <input asp-for="Name" class="form-control" placeholder="Tên">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group">
+                        <input asp-for="Email" class="form-control" placeholder="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group row">
+                        <div class="col-4">
+                            Giới tính:
+                        </div>
+                        <div class="col-8">
+                            <div>
+                                @Html.RadioButtonFor(s => s.Gender, Gender.Male) @Html.Label("Nam")
+                            </div>
+                            <div>
+                                @Html.RadioButtonFor(s => s.Gender, Gender.Female) @Html.Label("Nữ")
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-label-group">
+                        <input asp-for="Address" class="form-control" placeholder="Địa chỉ">
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group">
+                        <input asp-for="Password" class="form-control" placeholder="Mật khẩu">
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group">
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Xác nhận mật khẩu">
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section LoginCSS
+{
+    <link href="~/lib/css/LoginCSS.css" rel="stylesheet" />
+}
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+
+@section Scripts{
+    <script>
+        $(".custom-file-input").on("change",
+            function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        $('#i_file').change(function (event) {
+            $("#profilePicture").fadeIn("fast").attr('src', URL.createObjectURL(event.target.files[0]));
+        });
+    </script>
+}
+

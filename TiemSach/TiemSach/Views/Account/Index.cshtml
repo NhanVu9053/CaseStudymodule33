@@ -1,0 +1,111 @@
+﻿@model UserViewModel
+@{
+    ViewBag.Title = "Thông tin tài khoản";
+    var imagePath = !string.IsNullOrEmpty(Model.ProfilePicture) ? $"/images/users/{Model.ProfilePicture}" : "/images/users/0.png";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<div class="col-md-10 col-lg-8 col-xl-6 mx-auto">
+    <form class="form-signin" enctype="multipart/form-data" asp-controller="Account" asp-action="Index" method="post">
+        <input hidden asp-for="UserId" value="@Model.UserId" />
+        <input hidden asp-for="ProfilePicture" value="@Model.ProfilePicture" />
+        <div class="form-label-group my-3">
+            <img id="profilePicture" src="@imagePath" width="100" style="display: none;" class="mx-auto d-block" />
+        </div>
+        <div class="row my-3">
+            <div class="col-4">
+                Ảnh đại diện:
+            </div>
+            <div class="col-8">
+                <div class="form-label-group custom-file">
+                    <input type="file" class="custom-file-input selectImage" asp-for="ImageFile" id="i_file">
+                    <label class="custom-file-label selectImage" asp-for="ImageFile">Đổi ảnh đại diện</label>
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-4">
+                Email:
+            </div>
+            <div class="form-label-group col-8">
+                <input asp-for="Email" class="form-control" placeholder="Email">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-4">
+                Họ và tên:
+            </div>
+            <div class="form-label-group col-8">
+                <input asp-for="Name" class="form-control" placeholder="Tên">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-4">
+                Địa chỉ:
+            </div>
+            <div class="form-label-group col-8">
+                <input asp-for="Address" class="form-control" placeholder="Địa chỉ">
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-4">
+                Số điện thoại:
+            </div>
+            <div class="form-label-group col-8">
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại">
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col-4">
+                Giới tính:
+            </div>
+            <div class="form-label-group col-8">
+                <div>
+                    @Html.RadioButtonFor(s => s.Gender, Gender.Male) @Html.Label("Nam")
+                </div>
+                <div>
+                    @Html.RadioButtonFor(s => s.Gender, Gender.Female) @Html.Label("Nữ")
+                </div>
+            </div>
+        </div>
+
+        <div class="form-label-group my-3 text-center">
+            <button class="btn btn-primary" type="submit">Lưu</button>
+            <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Hủy</a>
+        </div>
+    </form>
+</div>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+@section Scripts{
+    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+    <script>
+        $(".custom-file-input").on("change",
+            function() {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        $('#i_file').change(function(event) {
+            $("#profilePicture").fadeIn("fast").attr('src', URL.createObjectURL(event.target.files[0]));
+        });
+    </script>
+}
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+

@@ -1,0 +1,76 @@
+﻿@model TiemSach.Models.ProductModel.Category
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var numberOfProducts = (int)ViewBag.NumberOfProducts;
+}
+
+
+<form asp-controller="CategoriesManager" asp-action="Edit" method="post">
+    <input asp-for="CategoryId" hidden />
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Name">Tên danh mục: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9">
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <button type="button" class="btn btn-danger mx-2" data-toggle="modal" data-target="#removeCategoryModal">
+                Xoá
+            </button>
+            <a asp-controller="CategoriesManager" asp-action="Index" class="btn btn-secondary">Huỷ</a>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="removeCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xóa danh mục</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @if (numberOfProducts == 0)
+            {
+                <div class="modal-body">
+                    Bạn có chắc chắn xóa danh mục này khỏi hệ thống?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                    <a asp-controller="CategoriesManager" asp-action="Remove" asp-route-id="@Model.CategoryId" class="btn btn-danger">Xác nhận</a>
+                </div>
+            }
+            else
+            {
+                <div class="modal-body text-danger">
+                    Bạn không thể xoá danh mục này vì danh mục này vẫn còn sản phẩm trong hệ thống!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+

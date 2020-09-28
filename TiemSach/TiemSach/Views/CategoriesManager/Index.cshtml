@@ -1,0 +1,58 @@
+﻿@model IEnumerable<TiemSach.Models.ProductModel.Category>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<a asp-controller="CategoriesManager" asp-action="Create" class="btn btn-primary mb-3"><i class="fa fa-plus"></i> Thêm danh mục</a>
+<table class="table table-hover table-responsive table-bordered display w-100 d-block d-md-table" id="category">
+    <thead>
+        <tr class="thead-dark">
+            <th>ID</th>
+            <th>Tên danh mục</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="CategoriesManager" asp-action="Edit" asp-route-id="@category.CategoryId">@category.CategoryId</a>
+                </td>
+                <td>@category.Name</td>
+                <td>
+                    <a asp-controller="CategoriesManager" asp-action="Edit" asp-route-id="@category.CategoryId" title="Chỉnh sửa" class="btn btn-primary">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section datatablejs{
+    <environment include="Development">
+        <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+       
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    </environment>
+    <script>
+        $(document).ready(function() {
+            $('#category').DataTable();
+        });
+    </script>
+}
+
+@section datatablecss{
+    <environment include="Development">
+        <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+     
+    </environment>
+    <environment exclude="Development">
+        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+

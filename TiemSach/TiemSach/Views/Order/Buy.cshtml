@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "Mua Ngay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var product = ViewBag.Product as Product;
+}
+
+<h4 class="alert alert-success">Sách đặt hàng: <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" target="_blank" class="alert-link">@product.Name</a></h4>
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="card card-signin my-5">
+            <div class="card-body rounded bg-light">
+                <div class="text-center">
+                    <h3 class="card-title">@ViewBag.Title</h3>
+                </div>
+                <div class="card-body rounded bg-light">
+                    <a asp-controller="Account" asp-action="Login" asp-route-productId="@ViewBag.ProductId" class="btn btn-block btn-primary mb-3">Đăng nhập</a>
+                    <a asp-controller="Account" asp-action="Register" asp-route-productId="@ViewBag.ProductId" class="btn btn-block btn-info my-3">Đăng ký</a>
+                    <a asp-controller="Order" asp-action="Order" asp-route-productId="@ViewBag.ProductId" class="btn btn-block btn-warning mb-3">
+                        <div>
+                            Mua không cần tài khoản!
+                        </div>
+                        <div class="small">
+                            (Không thể xem lại đơn hàng)
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

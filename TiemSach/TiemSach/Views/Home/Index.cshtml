@@ -1,0 +1,105 @@
+﻿@inject AppDbContext context
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var categories = ViewBag.Categories as List<TiemSach.Models.ProductModel.Category>;
+    var products = ViewBag.Products as List<TiemSach.Models.ProductModel.Product>;
+}
+
+<!-- Hero Section Begin -->
+<section class="hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="hero__categories">
+                    <div class="hero__categories__all">
+                        <i class="fa fa-bars"></i>
+                        <span>Danh Mục</span>
+                    </div>
+                    <ul>
+                        @{
+                            foreach (var category in categories)
+                            {
+                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Category" asp-route-id="@category.CategoryId">@category.Name</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="hero__search">
+                    <div class="hero__search__form">
+                        <form action="#">
+
+                            <input type="text" placeholder="What do you need?">
+                            <button type="submit" class="site-btn">SEARCH</button>
+                        </form>
+                    </div>
+                    <div class="hero__search__phone">
+                        <div class="hero__search__phone__icon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <div class="hero__search__phone__text">
+                            <h5>+84 93 199 5390</h5>
+                            <span>support 24/7 time</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero__item set-bg" data-setbg="Assets/img/banner/sachthang9.jpg">
+                    @*<div class="hero__text">
+                        <span>FRUIT FRESH</span>
+                        <h2>Vegetable <br />100% Organic</h2>
+                        <p>Free Pickup and Delivery Available</p>
+                        <a href="#" class="primary-btn">
+                            SHOP NOW
+                        </a>
+                    </div>*@
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@foreach (var category in categories)
+{
+    <h5 class="text-light  rounded text-center" style="background-color:#7FAD39">
+        <a asp-controller="Home" asp-action="Category" asp-route-id="@category.CategoryId" class="nav-link text-light">@category.Name</a>
+    </h5>
+    <div class="row">
+        @{
+            var productInCategory = (from e in products
+                                     where e.CategoryId == category.CategoryId && e.Remain > 0
+                                     select e).Take(12);
+        }
+
+        @foreach (var product in productInCategory)
+        {
+            <div class="col-md-4 col-lg-3 col-sm-6 col-xl-2 col-6 card-group">
+                <div class="card rounded my-3 bg-transparent py-2">
+                    <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId">
+                        @{
+                            var productImages = (from e in context.Images
+                                                 where e.ProductId == product.ProductId
+                                                 select e).ToList();
+                            if (productImages.Count != 0)
+                            {
+                                <img src="~/images/products/@productImages[0].ImageName" alt="@product.Name" style="height: 150px; max-width: 90%;" class="mx-auto d-block">
+                            }
+                        }
+                    </a>
+                    <h6 class="card-body text-center">
+                        <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" class="card-link">
+                            @product.Name
+                        </a>
+                    </h6>
+                    <h6 class="card-footer text-center text-danger bg-transparent">
+                        @product.Price.ToString("#,##0") ₫
+                    </h6>
+                </div>
+            </div>
+        }
+    </div>
+}

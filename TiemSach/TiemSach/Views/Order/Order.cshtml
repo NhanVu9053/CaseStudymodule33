@@ -1,0 +1,86 @@
+﻿@model TiemSach.ViewModel.OrderViewModel.CustomerViewModel
+@{
+    ViewBag.Title = "Thông tin đặt hàng - ";
+    var product = ViewBag.Product as Product;
+}
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="card card-signin my-5">
+            <div class="card-body rounded bg-light">
+                <h2 class="card-title text-center">Đặt hàng</h2>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <form class="form-signin" enctype="multipart/form-data" asp-controller="Order" asp-action="Order" method="post" autocomplete="off">
+                    <h4 class="mb-3">Thông tin khách hàng</h4>
+
+                    <input hidden asp-for="ProductId" value="@product.ProductId" />
+                    <div class="form-label-group">
+                        <input asp-for="Name" class="form-control" placeholder="Tên người nhận hàng">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-label-group" style="margin-top:10px;">
+                        <input asp-for="Address" class="form-control" placeholder="Địa chỉ nhận hàng">
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group" style="margin-top:10px;">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại người nhận hàng">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <h4 style="margin-top:10px;">Thông tin sản phẩm</h4>
+                    <div class="row my-3">
+                        <div class="col-4">
+                            Sản phẩm:
+                        </div>
+                        <div class="col-8">
+                            <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" target="_blank">@product.Name</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            Giá:
+                        </div>
+                        <div class="col-8">
+                            @product.Price.ToString("#,##0") ₫
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="col-4  btn-block text-uppercase my-3 mx-auto" style="background-color:#7FAD39" type="submit">Xác nhận</button>
+                        <a asp-controller="Home" asp-action="Index" class="col-4 btn btn-secondary btn-lg btn-block my-3 mx-auto">Huỷ</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section LoginCSS
+{
+    <link href="~/lib/css/LoginCSS.css" rel="stylesheet" />
+}
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+
+@section Scripts{
+    <script>
+        $(".custom-file-input").on("change",
+            function() {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        $('#i_file').change(function(event) {
+            $("#profilePicture").fadeIn("fast").attr('src', URL.createObjectURL(event.target.files[0]));
+        });
+    </script>
+}
+

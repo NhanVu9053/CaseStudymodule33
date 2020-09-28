@@ -1,0 +1,77 @@
+﻿@model TiemSach.ViewModel.RoleViewModel.EditRoleViewModel
+@{
+    ViewData["Title"] = "Sửa vai trò";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var usersCount = (int)ViewBag.UsersCount;
+}
+
+<form asp-controller="RolesManager" asp-action="Edit" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input asp-for="RoleId" hidden />
+    <div class="row form-group">
+        <div class="col-md-3">
+            <label asp-for="Name">Tên vai trò: </label>
+        </div>
+        <div class="col-md-9">
+            <input asp-for="Name" class="form-control" placeholder="Nhập tên thương hiệu sản phẩm">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9">
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <button type="button" class="btn btn-danger mx-2" data-toggle="modal" data-target="#removeRoleModal">
+                Xoá
+            </button>
+            <a asp-controller="RolesManager" asp-action="Index" class="btn btn-secondary">Huỷ</a>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="removeRoleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xóa vai trò</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @if (usersCount == 0)
+            {
+                <div class="modal-body">
+                    Bạn có chắc chắn xóa vai trò này khỏi hệ thống?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                    <a asp-controller="RolesManager" asp-action="Remove" asp-route-id="@Model.RoleId" class="btn btn-danger">Xác nhận</a>
+                </div>
+            }
+            else
+            {
+                <div class="modal-body text-danger">
+                    Bạn không thể xoá vì có một vài thành viên đang dùng vai trò này!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+

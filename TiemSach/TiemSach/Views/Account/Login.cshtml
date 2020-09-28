@@ -1,0 +1,63 @@
+﻿@model LoginViewModel
+@{
+    ViewBag.Title = "Đăng nhập";
+    var product = ViewBag.Product as Product;
+}
+
+@if (product != null)
+{
+    <h4 class="alert alert-success">Sản phẩm đặt hàng: <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" target="_blank" class="alert-link">@product.Name</a></h4>
+}
+
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="card card-signin my-5">
+            <div class="card-body rounded bg-light">
+                <div class="text-center mb-5">
+                    <h3 class="card-title">@ViewBag.Title</h3>
+                </div>
+                <form class="form-signin" asp-controller="Account" asp-action="Login" method="post">
+                    <input hidden asp-for="ReturnUrl" value="@ViewBag.ReturnUrl" />
+                    <input hidden asp-for="ProductId" value="@ViewBag.ProductId" />
+                    <div class="form-label-group">
+                        <input asp-for="Email" class="form-control" placeholder="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group">
+                        <input asp-for="Password" class="form-control" placeholder="Mật khẩu">
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-label-group mb-3">
+                        <input asp-for="RememberMe">
+                        <label asp-for="RememberMe" class="ml-4">Nhớ mật khẩu?</label>
+                    </div>
+                    <div class="form-label-group mb-3">
+                        <p>Chưa có tài khoản? <a asp-controller="Account" asp-action="Register">Đăng ký</a></p>
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Đăng nhập</button>
+                </form>
+                <div asp-validation-summary="All" class="text-danger mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section LoginCSS
+{
+    <link href="~/lib/css/LoginCSS.css" rel="stylesheet" />
+}
+
+@section ValidateScript
+{
+    <environment include="Development">
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+}
+

@@ -1,0 +1,118 @@
+﻿@inject TiemSach.Models.EF.AppDbContext context
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var categories = ViewBag.Categories as List<TiemSach.Models.ProductModel.Category>;
+    var products = ViewBag.Products as List<TiemSach.Models.ProductModel.Product>;
+}
+
+<a asp-controller="ProductsManager" asp-action="Create" class="btn btn-primary mb-3"><i class="fa fa-plus"></i> Thêm sản phẩm</a>
+<table class="table table-hover table-responsive table-bordered display w-100 d-block d-md-table" id="productsTable">
+    <thead>
+        <tr class="thead-dark">
+            <th>Tên</th>
+            <th>Hình ảnh</th>
+            <th>Thương hiệu</th>
+           
+            <th>Giá</th>
+            <th>Tồn kho</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="ProductsManager" asp-action="Edit" asp-route-id="@product.ProductId">@product.Name</a>
+                </td>
+                @{
+                    var images = (from e in context.Images
+                                  where e.ProductId == product.ProductId
+                                  select new TiemSach.Models.ProductModel.Image
+                                  {
+                                      ImageName = e.ImageName
+                                  }).ToList();
+                }
+                <td>
+                    @foreach (var image in images)
+                    {
+                        <a href="~/images/products/@image.ImageName" data-toggle="lightbox" data-gallery="@product.ProductId" data-title="@product.Name">
+                            <img src="~/images/products/@image.ImageName" height="50" class="mx-1 my-1" />
+                        </a>
+                    }
+                </td>
+                @{
+                    var category = (from e in context.Categories
+                                 where e.CategoryId == product.CategoryId
+                                 select new TiemSach.Models.ProductModel.Category
+                                 {
+                                     CategoryId = e.CategoryId,
+                                     Name = e.Name
+                                 }).ToList().FirstOrDefault().Name;
+                }
+                <td>@category</td>
+             
+                <td>@product.Price.ToString("#,##0") ₫</td>
+                <td>@product.Remain</td>
+                <td>
+                  
+                    <a asp-controller="ProductsManager" asp-action="Edit" asp-route-id="@product.ProductId" title="Chỉnh sửa">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section lightboxjs{
+    <environment include="Development">
+        <script src="~/lib/ekko-lightbox/ekko-lightbox.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js"></script>
+    </environment>
+    <script>
+        $(document).on('click',
+            '[data-toggle="lightbox"]',
+            function(event) {
+                event.preventDefault();
+                $(this).ekkoLightbox();
+            });
+    </script>
+}
+
+@section datatablejs{
+    <environment include="Development">
+        <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    </environment>
+    <script>
+        $(document).ready(function() {
+            $('#productsTable').DataTable();
+        });
+    </script>
+}
+
+@section datatablecss{
+    <environment include="Development">
+        <link href="~/lib/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    </environment>
+}
+
+@section lightboxcss{
+    <environment include="Development">
+        <link href="~/lib/ekko-lightbox/ekko-lightbox.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet" />
+    </environment>
+}
+

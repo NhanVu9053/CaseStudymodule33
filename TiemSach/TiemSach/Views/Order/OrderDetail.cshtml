@@ -1,0 +1,161 @@
+﻿@inject SignInManager<TiemSach.Models.UserModel.User> signInManager
+@inject UserManager<TiemSach.Models.UserModel.User> userManager
+@model TiemSach.ViewModel.OrderViewModel.OrderDetailViewModel
+@{
+    ViewBag.Title = "Chi tiết đơn hàng - ";
+    var userOrder = ViewBag.UserOrder as TiemSach.Models.UserModel.User;
+}
+
+@if (Model == null)
+{
+    <h2 class="text-danger">Đơn hàng không tồn tại!</h2>
+}
+else
+{
+    @if (Model.OrderStatus == TiemSach.Models.OrderModel.OrderStatus.Pending)
+    {
+        <h3 class="text-success">Cám ơn quý khách đã đặt hàng, chúng tôi đã nhận được đơn hàng và sẽ giao hàng trong thời gian nhanh nhất!</h3>
+    }
+    <h2>@ViewBag.Title</h2>
+    <p></p>
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                ID đơn hàng:
+            </div>
+            <div class="col-8">
+                @ViewBag.OrderId
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                Tên khách hàng:
+            </div>
+            <div class="col-8">
+                @Model.CustomerName
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                Địa chỉ:
+            </div>
+            <div class="col-8">
+                @Model.CustomerAddress
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                Số điện thoại:
+            </div>
+            <div class="col-8">
+                @Model.CustomerPhoneNumber
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                Trạng thái đơn hàng:
+            </div>
+            <div class="col-8">
+                @{
+                    var statusName = string.Empty;
+                    switch (Model.OrderStatus)
+                    {
+                        case OrderStatus.Pending:
+                            statusName = "Đợi xử lý";
+                            break;
+                        case OrderStatus.Processing:
+                            statusName = "Đang xử lý";
+                            break;
+                        case OrderStatus.Completed:
+                            statusName = "Đã hoàn thành";
+                            break;
+                        default:
+                            statusName = "Đã huỷ";
+                            break;
+                    }
+                }
+                @statusName
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                Ngày đặt hàng:
+            </div>
+            <div class="col-8">
+                @Model.OrderTime.ToString("dd/MM/yyyy hh:mm tt")
+            </div>
+        </div>
+        @if (Model.OrderStatus == OrderStatus.Completed)
+        {
+            <div class="row">
+                <div class="col-4">
+                    Ngày giao hàng:
+                </div>
+                <div class="col-8">
+                    @Model.CompleteTime.ToString("dd/MM/yyyy hh:mm tt")
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-4">
+                Sản phẩm:
+            </div>
+            <div class="col-8">
+                <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@Model.ProductId">
+                    @Model.ProductName
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                Giá sản phẩm:
+            </div>
+            <div class="col-8">
+                @Model.ProductPrice.ToString("#,##0") ₫
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                Ghi chú:
+            </div>
+            <div class="col-8">
+                @Model.Note
+            </div>
+        </div>
+    </div>
+    @if (signInManager.IsSignedIn(User))
+    {
+        var currentUser = userManager.FindByNameAsync(User.Identity.Name).Result;
+        if (currentUser.Id == userOrder.Id && Model.OrderStatus == OrderStatus.Pending)
+        {
+            <a class="btn btn-warning mx-3 my-4" asp-controller="Order" asp-action="Edit" asp-route-id="@ViewBag.OrderId">
+                Chỉnh sửa
+            </a>
+
+            <button type="button" class="btn btn-secondary mx-3 my-4" data-toggle="modal" data-target="#cancelOrder">
+                Huỷ đơn hàng!
+            </button>
+
+            <div class="modal fade" id="cancelOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Huỷ đơn hàng!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Bạn có chắc chắn huỷ đơn đặt hàng này?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                            <a asp-controller="Order" asp-action="Cancel" asp-route-id="@Model.OrderId" class="btn btn-danger">Xác nhận</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+

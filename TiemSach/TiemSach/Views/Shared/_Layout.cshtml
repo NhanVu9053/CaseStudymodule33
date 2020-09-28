@@ -1,0 +1,190 @@
+﻿@inject SignInManager<User> signInManager
+@inject UserManager<User> userManager
+@inject AppDbContext context
+
+@{
+
+    var title = (string)ViewBag.Title;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TiemSach</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+    <!-- Css Styles -->
+
+    <link rel="stylesheet" href="~/Assets/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="~/Assets/css/font-awesome.min.css" type="text/css">
+    <link href="~/lib/datatable/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Assets/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="~/Assets/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="~/Assets/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="~/Assets/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="~/Assets/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="~/Assets/css/style.css" type="text/css">
+
+    @RenderSection("PageNotFound", false)
+    @RenderSection("LoginCSS", false)
+    @RenderSection("lightboxcss", false)
+    @RenderSection("datatablecss", false)
+
+</head>
+<body style="font-family:Arial, Helvetica, sans-serif">
+
+    <!-- Page Preloder -->
+    <!-- Humberger Begin -->
+    <!-- Humberger End -->
+    <!-- Header Section Begin -->
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="header__logo">
+
+                        <a asp-controller="Home" asp-action="Index"><img src="~/Assets/img/product/logo2.png" alt="" style="height:50px;width:120px;"></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <nav class="header__menu">
+                        <ul style="font-family:'Bookman Old Style'">
+                            <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            @*<li><a href="./shop-grid.html">Shop</a></li>*@
+                            <li>
+                                @*<a href="#">Admin</a>*@
+
+                            </li>
+                            <li>
+                                @*<a href="#">Admin</a>*@
+
+                            </li>
+                            <li>
+                                @*<a href="#">Admin</a>*@
+
+                            </li>
+                          
+                           
+                            @if (signInManager.IsSignedIn(User))
+                            {
+                                var currentUser = userManager.FindByNameAsync(User.Identity.Name).Result;
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                        <img src="@(!string.IsNullOrEmpty(currentUser.ProfilePicture) ? $"/images/users/{currentUser.ProfilePicture}" : "/images/users/0.png")" width="30 " height="30" class="rounded-circle" />&nbsp;
+                                        @currentUser.Name
+                                    </a>
+                                    <div class="dropdown-menu ">
+
+
+                                        <a class="dropdown-item" asp-controller="ProductsManager" asp-action="Index">Trang quản trị</a>
+                                        <a class="dropdown-item" asp-controller="ProductsManager" asp-action="Create">Thêm sản phẩm</a>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Index">Tài khoản</a>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Orders">Đơn hàng</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Logout">Thoát</a>
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+
+                                <li class="nav-item">
+                                    <a asp-controller="Account" asp-action="Login" class="nav-link">Đăng nhập</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Account" asp-action="Register" class="nav-link">Đăng ký</a>
+                                </li>
+
+                            }
+                            @*<li><a href="./blog.html">Blog</a></li>*@
+                            @*<li><a href="./contact.html">Contact</a></li>*@
+                            @*<li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
+        <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>*@
+
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3">
+                    <div class="header__menu">
+                        <ul class="navbar-nav" style="font-family:'Times New Roman', Times, serif">
+                           
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="humberger__open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+    <!-- Hero Section Begin -->
+    <!-- Hero Section End -->
+
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer Section Begin -->
+    <footer class="footer spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="footer__about">
+                        <div class="footer__about__logo">
+                            <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                        </div>
+                        <ul>
+                            <li>Address: 28 Nguyễn Tri Phương -Huế</li>
+                            <li>Phone: +84 93 199 5390</li>
+                            <li>Email: nhanvu9053@gmail.com</li>
+                        </ul>
+                    </div>
+                </div>
+               </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer__copyright">
+                        <div class="footer__copyright__text">
+                            <p>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by Nhân Vũ
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            </p>
+                        </div>
+                        <div class="footer__copyright__payment"><img src="img/payment-item.png" alt=""></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+    <!-- Js Plugins -->
+    <script src="~/Assets/js/jquery-3.3.1.min.js"></script>
+    <script src="~/Assets/js/bootstrap.min.js"></script>
+
+    <script src="~/Assets/js/jquery.nice-select.min.js"></script>
+    <script src="~/Assets/js/jquery-ui.min.js"></script>
+    <script src="~/Assets/js/jquery.slicknav.js"></script>
+    <script src="~/lib/datatablenet/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatable/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Assets/js/mixitup.min.js"></script>
+    <script src="~/Assets/js/owl.carousel.min.js"></script>
+    <script src="~/Assets/js/main.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+    @RenderSection("ValidateScript", false)
+    @RenderSection("lightboxjs", false)
+    @RenderSection("datatablejs", false)
+    @RenderSection("tinyMCE", false)
+</body>
+</html>

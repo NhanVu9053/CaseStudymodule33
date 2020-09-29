@@ -126,7 +126,7 @@ else
     @if (signInManager.IsSignedIn(User))
     {
         var currentUser = userManager.FindByNameAsync(User.Identity.Name).Result;
-        if (currentUser.Id == userOrder.Id && Model.OrderStatus == OrderStatus.Pending)
+        if (currentUser.Id == userOrder.Id)
         {
             <a class="btn btn-warning mx-3 my-4" asp-controller="Order" asp-action="Edit" asp-route-id="@ViewBag.OrderId">
                 Chỉnh sửa

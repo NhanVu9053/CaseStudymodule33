@@ -107,7 +107,7 @@ namespace TiemSach.Controllers
                 var createOrderDetail = orderDetailRepository.Create(orderDetail);
                 context.Products.Find(model.ProductId).Remain -= 1;
                 context.SaveChanges();
-                return RedirectToAction("OrderDetail", new { id = createOrder.OrderId });
+                return RedirectToAction("OrderDetail3", new { id = createOrder.OrderId });
             }
 
             return View();
@@ -140,6 +140,7 @@ namespace TiemSach.Controllers
                                  join o in context.Orders on c.CustomerId equals o.CustomerId
                                  where o.OrderId == id
                                  select u).ToList().FirstOrDefault();
+          
             return View(orderDetail);
         }
 

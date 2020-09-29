@@ -11,8 +11,13 @@
     var relatedProducts = ViewBag.RelatedProducts as IEnumerable<Product>;
     ViewBag.Title = $"{Model.CategoryName} - {Model.Name} ";
 }
+<style>
+    * {
+        font-family: 'Times New Roman' !important;
+    }
+</style>
 
-<div class="row"style="font-family:'Bookman Old Style'" >
+<div class="row" style="font-family:'Bookman Old Style'">
     <h2>@ViewBag.Title</h2>
     @if (User.IsInRole("Admin"))
     {
@@ -25,12 +30,12 @@
     }
 </div>
 <div class="row" style="font-family:'Times New Roman'">
-    <div class="col-md-5 text-center my-auto">
+    <div class="col-md-5 text-center my-auto" id="img1">
         @{
             if (images.Count != 0)
             {
                 <div>
-                    <a href="~/images/products/@images[0].ImageName" data-toggle="lightbox" data-gallery="productImages" data-title="@Model.Name hình 1">
+                    <a href="~/images/products/@images[0].ImageName"  data-gallery="productImages" data-title="@Model.Name">
                         <img src="~/images/products/@images[0].ImageName" class="img-fluid my-3" style="max-height: 350px; max-width: 100%" />
                     </a>
                 </div>
@@ -38,7 +43,7 @@
                     <div class="mx-auto">
                         @for (var i = 1; i < images.Count; i++)
                         {
-                            <a class="my-2 mx-1" href="~/images/products/@images[i].ImageName" data-toggle="lightbox" data-gallery="productImages" data-title="@Model.Name hình @(i + 1)">
+                            <a class="my-2 mx-1" href="~/images/products/@images[i].ImageName"  data-gallery="productImages" data-title="@Model.Name hình @(i + 1)">
                                 <img src="~/images/products/@images[i].ImageName" height="60" />
                             </a>
                         }
@@ -89,7 +94,7 @@
 
     </div>
 </div>
-<div class="row my-3" >
+<div class="row my-3">
     <div class="col-xl-8 col-lg-7 mb-3 full-description" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
         @Html.Raw(Model.Description)
     </div>
@@ -110,6 +115,7 @@
                 $(this).ekkoLightbox();
             });
     </script>
+
 }
 
 @section lightboxcss{
@@ -120,4 +126,11 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet" />
     </environment>
 }
+
+
+ <script>
+     $('#img1').ezPlus({
+         scrollZoom: true
+     });
+</script>
 

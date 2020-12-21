@@ -42,6 +42,10 @@ namespace TiemSach
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("TiemSachDbConnection")));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +63,8 @@ namespace TiemSach
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
+
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();

@@ -11,11 +11,13 @@
     var relatedProducts = ViewBag.RelatedProducts as IEnumerable<Product>;
     ViewBag.Title = $"{Model.CategoryName} - {Model.Name} ";
 }
-<style>
+@*<style>
     * {
         font-family: 'Times New Roman' !important;
     }
-</style>
+</style>*@
+
+
 
 <div class="row" style="font-family:'Bookman Old Style'">
     <h2>@ViewBag.Title</h2>
@@ -35,7 +37,7 @@
             if (images.Count != 0)
             {
                 <div>
-                    <a href="~/images/products/@images[0].ImageName"  data-gallery="productImages" data-title="@Model.Name">
+                    <a href="~/images/products/@images[0].ImageName" data-gallery="productImages" data-title="@Model.Name">
                         <img src="~/images/products/@images[0].ImageName" class="img-fluid my-3" style="max-height: 350px; max-width: 100%" />
                     </a>
                 </div>
@@ -43,7 +45,7 @@
                     <div class="mx-auto">
                         @for (var i = 1; i < images.Count; i++)
                         {
-                            <a class="my-2 mx-1" href="~/images/products/@images[i].ImageName"  data-gallery="productImages" data-title="@Model.Name hình @(i + 1)">
+                            <a class="my-2 mx-1" href="~/images/products/@images[i].ImageName" data-gallery="productImages" data-title="@Model.Name  @(i + 1)">
                                 <img src="~/images/products/@images[i].ImageName" height="60" />
                             </a>
                         }
@@ -62,7 +64,9 @@
                 @{
                     if (Model.Remain != 0)
                     {
-                        <a class="btn btn-warning p-3" asp-controller="Order" asp-action="Buy" asp-route-id="@Model.ProductId">MUA NGAY! <i class="fas fa-cart-plus"></i></a>
+                        <a class="btn btn-warning p-3" asp-controller="Order" asp-action="Buy" asp-route-id="@Model.ProductId">MUA NGAY!</a>
+
+
                     }
                     else
                     {
@@ -89,9 +93,10 @@
             <div class="col-7">
                 @Model.DoP.ToString("dd/mm/yyyy")
             </div>
+
         </div>
         <hr />
-
+        <div class="col-md-5 text-center my-3" > <a asp-controller="Cart" asp-action="addCart" asp-route-id="@Model.ProductId" class="btn btn-primary" style="width: 170px;right:0px" >Thêm vào giỏ hàng</a></div>
     </div>
 </div>
 <div class="row my-3">
@@ -128,9 +133,11 @@
 }
 
 
- <script>
-     $('#img1').ezPlus({
-         scrollZoom: true
-     });
+<script>
+    $('#img1').ezPlus({
+        scrollZoom: true
+    });
 </script>
+
+
 

@@ -17,5 +17,6 @@ namespace TiemSach.Models.ProductModel
         Product Edit(Product product);
 
         bool Remove(string id);
+        List<Product> Search(string name);
     }
 }

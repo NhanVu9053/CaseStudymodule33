@@ -35,6 +35,8 @@ namespace TiemSach.ViewModel.OrderViewModel
         [RegularExpression(@"^\(?(0|[3|5|7|8|9])+([0-9]{8})$", ErrorMessage = "Số điện thoại không hợp lệ!")]
         public string CustomerPhoneNumber { get; set; }
 
+        public int Quantity { get; set; }
+
         public string Note { get; set; }
     }
 }

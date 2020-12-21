@@ -94,7 +94,9 @@ namespace TiemSach.Controllers
                 {
                     CustomerId = createCustomer.CustomerId,
                     OrderTime = DateTime.Now,
-                    Status = OrderStatus.Pending
+                    Status = OrderStatus.Pending,
+                    Quatity=model.Quantity
+                    
                 };
                 var createOrder = orderRepository.Create(order);
                 var orderDetail = new OrderDetail
@@ -102,12 +104,12 @@ namespace TiemSach.Controllers
                     OrderId = createOrder.OrderId,
                     ProductId = product.ProductId,
                     Price = product.Price,
-                    Quantity = 1
+                    Quantity = order.Quatity
                 };
                 var createOrderDetail = orderDetailRepository.Create(orderDetail);
                 context.Products.Find(model.ProductId).Remain -= 1;
                 context.SaveChanges();
-                return RedirectToAction("OrderDetail3", new { id = createOrder.OrderId });
+                return RedirectToAction("OrderDetail", new { id = createOrder.OrderId });
             }
 
             return View();
@@ -132,7 +134,8 @@ namespace TiemSach.Controllers
                                    ProductName = p.Name,
                                    ProductPrice = p.Price,
                                    OrderStatus = o.Status,
-                                   Note = o.Note
+                                   Note = o.Note,
+                                   Quantity=o.Quatity
                                }).ToList().FirstOrDefault();
             ViewBag.OrderId = id;
             ViewBag.UserOrder = (from u in context.Users

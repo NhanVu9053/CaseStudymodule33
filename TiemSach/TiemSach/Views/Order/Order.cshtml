@@ -1,7 +1,11 @@
-﻿@model TiemSach.ViewModel.OrderViewModel.CustomerViewModel
+﻿@inject AppDbContext context
+@model TiemSach.ViewModel.OrderViewModel.CustomerViewModel
 @{
+
+    int PriceProduct = context.Products.FirstOrDefault(el => el.ProductId == Model.ProductId).Price;
     ViewBag.Title = "Thông tin đặt hàng - ";
     var product = ViewBag.Product as Product;
+
 }
 <div class="row">
     <div class="col-md-8 col-lg-6 mx-auto">
@@ -13,6 +17,7 @@
                     <h4 class="mb-3">Thông tin khách hàng</h4>
 
                     <input hidden asp-for="ProductId" value="@product.ProductId" />
+                    <input type="hidden" value="@PriceProduct" id="PriceProduct" />
                     <div class="form-label-group">
                         <input asp-for="Name" class="form-control" placeholder="Tên người nhận hàng">
                         <span asp-validation-for="Name" class="text-danger"></span>
@@ -33,16 +38,27 @@
                             Sản phẩm:
                         </div>
                         <div class="col-8">
-                            <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" target="_blank">@product.Name</a>
+                            <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" target="_blank" style="color:blue">@product.Name</a>
                         </div>
+                    </div>
+                    <div class=" col form-group row">
+                        <label asp-for="Quantity">Số lượng</label>
+                        @*<span class="text-center minus" onclick="del();"> &nbsp;&nbsp;<i class=" fa fa-minus" aria-hidden="true"></i>&nbsp;&nbsp;</span>
+        <input asp-for="Quantity" class="form-control" value="1" style="height:25px; width:80px; text-align: center" id="Quantity">
+        <span class="text-center plus"  onclick="plus();"> &nbsp;&nbsp;<i class="fa fa-plus" aria-hidden="true"></i></span>
+        <span asp-validation-for="Quantity" class="text-danger"></span>*@
+                        <input asp-for="Quantity" autocomplete="off" class="form-control" oninput="plus()" onchange="plus()" value="1" min="1" style="height:25px; width:80px; text-align: center" id="Quantity">
                     </div>
                     <div class="row">
                         <div class="col-4">
                             Giá:
                         </div>
                         <div class="col-8">
-                            @product.Price.ToString("#,##0") ₫
+                            <span id="Total">
+                                @product.Price.ToString("#,##0") ₫
+                            </span>
                         </div>
+
                     </div>
                     <div class="row">
                         <button class="col-4  btn-block text-uppercase my-3 mx-auto" style="background-color:#7FAD39" type="submit">Xác nhận</button>
@@ -74,13 +90,45 @@
 @section Scripts{
     <script>
         $(".custom-file-input").on("change",
-            function() {
+            function () {
                 var fileName = $(this).val().split("\\").pop();
                 $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
             });
-        $('#i_file').change(function(event) {
+        $('#i_file').change(function (event) {
             $("#profilePicture").fadeIn("fast").attr('src', URL.createObjectURL(event.target.files[0]));
         });
     </script>
+
+    <script>
+        $(".custom-file-input").on("change",
+            function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        $('#i_file').change(function (event) {
+            $("#profilePicture").fadeIn("fast").attr('src', URL.createObjectURL(event.target.files[0]));
+        });
+    </script>
+    @*<script>
+        var i = 1;
+        function plus() {
+            i++;
+            document.getElementById('Quantity').value = i;
+            $("#Total").html((parseInt($("#Quantity").val(), 10) * parseInt($("#PriceProduct").val(), 10)).toLocaleString('vi', { style: 'currency', currency: 'VND' }));
+        }
+        function del() {
+            if (i >= 2) {
+                i--;
+                document.getElementById('Quantity').value = i;
+                $("#Total").html((parseInt($("#Total").text(), 10) - parseInt($("#PriceProduct").val(), 10)).toLocaleString('vi', { style: 'currency', currency: 'VND' }));
+            }
+        }
+    </script>*@
+<script>
+    var i = 1;
+    function plus() {
+        $("#Total").html((parseInt($("#Quantity").val(), 10) * parseFloat($("#PriceProduct").val(), 10)).toLocaleString('vi', { style: 'currency', currency: 'VND' }));
+    }
+</script>
 }
 

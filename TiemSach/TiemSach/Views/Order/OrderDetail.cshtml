@@ -4,6 +4,7 @@
 @{
     ViewBag.Title = "Chi tiết đơn hàng - ";
     var userOrder = ViewBag.UserOrder as TiemSach.Models.UserModel.User;
+   
 }
 
 @if (Model == null)
@@ -108,10 +109,10 @@ else
         </div>
         <div class="row">
             <div class="col-4">
-                Giá sản phẩm:
+                Tổng Thanh Toán:
             </div>
             <div class="col-8">
-                @Model.ProductPrice.ToString("#,##0") ₫
+                @((Model.ProductPrice * Model.Quantity).ToString("#,##0")) ₫
             </div>
         </div>
         <div class="row">

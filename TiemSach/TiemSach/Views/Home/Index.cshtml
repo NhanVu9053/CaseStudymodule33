@@ -4,7 +4,27 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var categories = ViewBag.Categories as List<TiemSach.Models.ProductModel.Category>;
     var products = ViewBag.Products as List<TiemSach.Models.ProductModel.Product>;
+    var images = context.Images.ToList();
 }
+<style>
+    h3 > a {
+        position: absolute;
+        bottom: 0;
+        color: #0000;
+        margin: 20px;
+        text-align: center;
+        font-size: 20px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .set-bg {
+        /*  text-align: center;*/
+    }
+</style>
+
+
 
 <!-- Hero Section Begin -->
 <section class="hero">
@@ -20,7 +40,7 @@
                         @{
                             foreach (var category in categories)
                             {
-                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Category" asp-route-id="@category.CategoryId">@category.Name</a></li>
+                                <li style="font-weight:300"><a class="dropdown-item" asp-controller="Home" asp-action="Category" asp-route-id="@category.CategoryId">@category.Name</a></li>
                             }
                         }
                     </ul>
@@ -29,9 +49,9 @@
             <div class="col-lg-9">
                 <div class="hero__search">
                     <div class="hero__search__form">
-                        <form action="#">
+                        <form asp-controller="Home" asp-action="Search" method="post">
 
-                            <input type="text" placeholder="What do you need?">
+                            <input type="text" name="search" placeholder="What do you need?">
                             <button type="submit" class="site-btn">SEARCH</button>
                         </form>
                     </div>
@@ -49,12 +69,12 @@
                 <div class="hero__item set-bg" data-setbg="Assets/img/banner/sachthang9.jpg">
                     <div class="hero__text">
                         @*<span>FRUIT FRESH</span>
-                        <h2>Vegetable <br />100% Organic</h2>
-                        <p>Free Pickup and Delivery Available</p>*@
-                        
-                        <a href="#" class="primary-btn">
+                            <h2>Vegetable <br />100% Organic</h2>
+                            <p>Free Pickup and Delivery Available</p>*@
+
+                        @*<a asp-controller="Home" asp-action="Category"asp-route-id="@context.Products" class="primary-btn">
                             SHOP NOW
-                        </a>
+                        </a>*@
                     </div>
                 </div>
 
@@ -62,45 +82,89 @@
         </div>
     </div>
 </section>
-
-
-@foreach (var category in categories)
-{
-    <h5 class="text-light  rounded text-center" style="background-color:#7FAD39">
-        <a asp-controller="Home" asp-action="Category" asp-route-id="@category.CategoryId" class="nav-link text-light">@category.Name</a>
-    </h5>
-    <div class="row">
-        @{
-            var productInCategory = (from e in products
-                                     where e.CategoryId == category.CategoryId && e.Remain > 0
-                                     select e).Take(12);
-        }
-
-        @foreach (var product in productInCategory)
-        {
-            <div class="col-md-4 col-lg-3 col-sm-6 col-xl-2 col-6 card-group">
-                <div class="card rounded my-3 bg-transparent py-2">
-                    <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId">
-                        @{
-                            var productImages = (from e in context.Images
-                                                 where e.ProductId == product.ProductId
-                                                 select e).ToList();
-                            if (productImages.Count != 0)
+<h5 class="nav-link text-light  rounded text-center" style="background-color:#7FAD39"> Có Thể Bạn Thích </h5>
+    <section class="categories" style="margin:20px">
+        <div class="container">
+            <div class="row">
+                <div class="categories__slider owl-carousel owl-loaded owl-drag">
+                    <div class="owl-stage-outer">
+                        <div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all 0.5s ease 0s; width: 100px;">
+                            @foreach (var item in products)
                             {
-                                <img src="~/images/products/@productImages[0].ImageName" alt="@product.Name" style="height: 150px; max-width: 90%;" class="mx-auto d-block ">
+
+                                <div class="owl-item cloned" style="width: 292.5px;">
+                                    <div class="col-lg-3">
+                                        <div class="categories__item set-bg" data-setbg="images/products/@images.Find(el=>el.ProductId==item.ProductId).ImageName"
+                                             @*style="background-image: url(&quot;/images/products/@images.Find(el=>el.ProductId==item.ProductId).ImageName&quot;);"*@>
+
+                                            <h3><a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@item.ProductId">@item.Name</a></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="owl-item active" style="width: 292.5px;">
+                                    <div class="col-lg-3">
+                                        <div class="categories__item set-bg" data-setbg="images/products/@images.Find(el=>el.ProductId==item.ProductId).ImageName"
+                                             @*style="background-image: url(&quot;/images/products/@images.Find(el=>el.ProductId==item.ProductId).ImageName&quot;);"*@>
+
+                                            <h3><a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@item.ProductId">@item.Name</a></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="owl-item cloned active" style="width: 292.5px;">
+                                    <div class="col-lg-3">
+                                        <div class="categories__item set-bg" data-setbg="images/products/@images.Find(el=>el.ProductId==item.ProductId).ImageName"
+                                             @*style="background-image: url(&quot;/images/products/@images.Find(el=>el.ProductId==item.ProductId).ImageName&quot;);"*@>
+
+                                            <h3><a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@item.ProductId">@item.Name</a></h3>
+                                        </div>
+                                    </div>
+                                </div>
                             }
-                        }
-                    </a>
-                    <h6 class="card-body text-center">
-                        <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" class="card-link" style="color:black">
-                            @product.Name
-                        </a>
-                    </h6>
-                    <h6 class="card-footer text-center text-danger bg-transparent">
-                        @product.Price.ToString("#,##0") ₫
-                    </h6>
+
+                        </div>
+                    </div><div class="owl-nav"><button type="button" role="presentation" class="owl-prev"><span class="fa fa-angle-left"><span></span></span></button><button type="button" role="presentation" class="owl-next"><span class="fa fa-angle-right"><span></span></span></button></div><div class="owl-dots disabled"></div>
                 </div>
             </div>
-        }
-    </div>
-}
+        </div>
+    </section>
+
+    @foreach (var category in categories)
+    {
+        <h5 class="text-light  rounded text-center" style="background-color:#7FAD39">
+            <a asp-controller="Home" asp-action="Category" asp-route-id="@category.CategoryId" class="nav-link text-light">@category.Name</a>
+        </h5>
+        <div class="row">
+            @{
+                var productInCategory = (from e in products
+                                         where e.CategoryId == category.CategoryId && e.Remain > 0
+                                         select e).Take(12);
+            }
+
+            @foreach (var product in productInCategory)
+            {
+                <div class="col-md-4 col-lg-3 col-sm-6 col-xl-2 col-6 card-group">
+                    <div class="card rounded my-3 bg-transparent py-2">
+                        <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId">
+                            @{
+                                var productImages = (from e in context.Images
+                                                     where e.ProductId == product.ProductId
+                                                     select e).ToList();
+                                if (productImages.Count != 0)
+                                {
+                                    <img src="~/images/products/@productImages[0].ImageName" alt="@product.Name" style="height: 150px; max-width: 90%;" class="mx-auto d-block ">
+                                }
+                            }
+                        </a>
+                        <h6 class="card-body text-center">
+                            <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" class="card-link" style="color:black">
+                                @product.Name
+                            </a>
+                        </h6>
+                        <h6 class="card-footer text-center text-danger bg-transparent">
+                            @product.Price.ToString("#,##0") ₫
+                        </h6>
+                    </div>
+                </div>
+            }
+        </div>
+    }

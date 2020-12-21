@@ -5,6 +5,24 @@
 @{
 
     var title = (string)ViewBag.Title;
+    var data = Context.Session.GetString("cart");
+
+    int coutCart = 0;
+    if (data == null)
+    {
+        coutCart = 0;
+    }
+    else
+    {
+        var data2 = Context.Session.GetString("cart");
+        List<Cart> dataCart = JsonConvert.DeserializeObject<List<Cart>>(data2);
+        foreach (var item in dataCart)
+        {
+            coutCart += item.Quantity;
+        }
+
+    }
+
 }
 
 <!DOCTYPE html>
@@ -17,13 +35,13 @@
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
     <!-- Css Styles -->
-
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/Assets/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="~/Assets/css/font-awesome.min.css" type="text/css">
     <link href="~/lib/datatable/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/Assets/css/elegant-icons.css" type="text/css">
     <link rel="stylesheet" href="~/Assets/css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="~/Assets/css/jquery-ui.min.css" type="text/css">
+    
     <link rel="stylesheet" href="~/Assets/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="~/Assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="~/Assets/css/style.css" type="text/css">
@@ -52,69 +70,7 @@
 </head>
 
 <body style="font-family:Arial, Helvetica, sans-serif">
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
-
-    <!-- Humberger Begin -->
-    <div class="humberger__menu__overlay"></div>
-    <div class="humberger__menu__wrapper">
-        <div class="humberger__menu__logo">
-            <a href="#"><img src="img/logo.png" alt=""></a>
-        </div>
-        <div class="humberger__menu__cart">
-            <ul>
-                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-            </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
-        </div>
-        <div class="humberger__menu__widget">
-            <div class="header__top__right__language">
-                <img src="img/language.png" alt="">
-                <div>English</div>
-                <span class="arrow_carrot-down"></span>
-                <ul>
-                    <li><a href="#">Spanis</a></li>
-                    <li><a href="#">English</a></li>
-                </ul>
-            </div>
-            <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i> Login</a>
-            </div>
-        </div>
-        <nav class="humberger__menu__nav mobile-menu">
-            <ul>
-                <li class="active"><a href="./index.html">Home</a></li>
-                <li><a href="./shop-grid.html">Shop</a></li>
-                <li>
-                    <a href="#">Pages</a>
-                    <ul class="header__menu__dropdown">
-                        <li><a href="./shop-details.html">Shop Details</a></li>
-                        <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-                        <li><a href="./checkout.html">Check Out</a></li>
-                        <li><a href="./blog-details.html">Blog Details</a></li>
-                    </ul>
-                </li>
-                <li><a href="./blog.html">Blog</a></li>
-                <li><a href="./contact.html">Contact</a></li>
-            </ul>
-        </nav>
-        <div id="mobile-menu-wrap"></div>
-        <div class="header__top__right__social">
-            <a href="#"><i class="fa fa-facebook"></i></a>
-            <a href="#"><i class="fa fa-twitter"></i></a>
-            @*<a href="#"><i class="fa fa-linkedin"></i></a>
-            <a href="#"><i class="fa fa-pinterest-p"></i></a>*@
-        </div>
-        <div class="humberger__menu__contact">
-            <ul>
-                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-                <li>Free Shipping for all Order of $99</li>
-            </ul>
-        </div>
-    </div>
+ 
     <!-- Humberger End -->
     <!-- Header Section Begin -->
     <header class="header">
@@ -124,40 +80,40 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="header__top__left">
                             <ul>
-                                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-                                <li>Free Shipping for all Order of $99</li>
+                                @*<li><i class="fa fa-bookmark-o"></i> Hello EveryOne</li>*@
+                                <li style="color:red"><i class="fa fa-truck" style="font-size:30px;color:#7FAD39"></i> Free Shipping với mọi hóa đơn </li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6">
                         <div class="header__top__right">
-                            <div class="header__top__right__social">
+                            <div class="header__top__right__social" style="margin-top:10px;">
                                 <a href="#"><i class="fa fa-facebook"></i></a>
                                 <a href="#"><i class="fa fa-twitter"></i></a>
                                 @*<a href="#"><i class="fa fa-linkedin"></i></a>
-                                <a href="#"><i class="fa fa-pinterest-p"></i></a>*@
-                           </div>
+                                    <a href="#"><i class="fa fa-pinterest-p"></i></a>*@
+                            </div>
 
                             @if (signInManager.IsSignedIn(User))
                             {
                                 var currentUser = userManager.FindByNameAsync(User.Identity.Name).Result;
                                 <div class="nav-item dropdown" style="position:absolute; right:0">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    <img src="@(!string.IsNullOrEmpty(currentUser.ProfilePicture) ? $"/images/users/{currentUser.ProfilePicture}" : "/images/users/0.png")" width="30 " height="30" class="rounded-circle" />&nbsp;
-                                    @currentUser.Name
-                                </a>
-                                <div class="dropdown-menu ">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                        <img src="@(!string.IsNullOrEmpty(currentUser.ProfilePicture) ? $"/images/users/{currentUser.ProfilePicture}" : "/images/users/0.png")" width="30 " height="30" class="rounded-circle" />&nbsp;
+                                        @currentUser.Name
+                                    </a>
+                                    <div class="dropdown-menu ">
 
 
-                                    <a class="dropdown-item" asp-controller="ProductsManager" asp-action="Index">Trang quản trị</a>
-                                    <a class="dropdown-item" asp-controller="ProductsManager" asp-action="Create">Thêm sản phẩm</a>
-                                    <a class="dropdown-item" asp-controller="Account" asp-action="Index">Tài khoản</a>
-                                    <a class="dropdown-item" asp-controller="Account" asp-action="Orders">Đơn hàng</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-controller="Account" asp-action="Logout">Thoát</a>
+                                        <a class="dropdown-item" asp-controller="ProductsManager" asp-action="Index">Trang quản trị</a>
+                                        <a class="dropdown-item" asp-controller="ProductsManager" asp-action="Create">Thêm sản phẩm</a>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Index">Tài khoản</a>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Orders">Đơn hàng</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Logout">Thoát</a>
+                                    </div>
                                 </div>
-                               </div>
-                              
+
                             }
                             else
                             { <div class="header__top__right__auth">
@@ -187,7 +143,7 @@
                     <nav class="header__menu">
                         <ul>
                             <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                            <li><a href="./shop-grid.html">Shop</a></li>
+                            <li><a href="#">Shop</a></li>
                             <li>
                                 <a href="#">Pages</a>
                                 <ul class="header__menu__dropdown">
@@ -196,9 +152,9 @@
                                     <li><a href="./checkout.html">Check Out</a></li>
                                     <li><a href="./blog-details.html">Blog Details</a></li>
                                 </ul>
-                            </li>
-                            <li><a href="./blog.html">Blog</a></li>
-                            <li><a href="./contact.html">Contact</a></li>
+                            </li>s
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Contact</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -206,7 +162,7 @@
                     <div class="header__cart">
                         <ul>
                             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                            <li><a asp-controller="Cart" asp-action="ListCart"><i class="fa fa-shopping-bag"></i><span>@coutCart</span></a></li>
                         </ul>
                         <div class="header__cart__price">item: <span>$150.00</span></div>
                     </div>
@@ -352,9 +308,11 @@
     </footer>
     <!-- Footer Section End -->
     <!-- Js Plugins -->
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/Assets/js/jquery-3.3.1.min.js"></script>
-    <script src="~/lib/jquery/jquery.zoom.js"></script>
-    <script src="~/lib/jquery/dist/jquery.mousewheel.min.js"></script>
+    @*<script src="~/lib/jquery/jquery.zoom.js"></script>
+    <script src="~/lib/jquery/dist/jquery.mousewheel.min.js"></script>*@
     <script src="~/Assets/js/bootstrap.min.js"></script>
 
     <script src="~/Assets/js/jquery.nice-select.min.js"></script>

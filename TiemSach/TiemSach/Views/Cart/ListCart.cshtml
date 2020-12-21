@@ -1,0 +1,87 @@
+﻿@inject AppDbContext context
+@{
+    var dataCart = ViewBag.carts as List<Cart>;
+    ViewData["Title"] = "List Cart";
+    int STT = 0;
+    int totalCart = 0;
+    var images = context.Images.ToList();
+}
+<h3 class="display-4 text-success text-center">CHI TIẾT GIỎ HÀNG</h3>
+<h4 class="text-center text-warning">@TempData["Message"]</h4>
+<hr />
+<div class="text-center ml-4 mr-4">
+    <table id="tbCarts" class="table table-bordered table-hover table-primary">
+        <thead class="thead-dark">
+            <tr>
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                @*<th>Phân loại</th>*@
+
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Hình ảnh</th>
+                <th>Thành tiền</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dataCart != null)
+            {
+                foreach (var cart in dataCart)
+                {
+                    STT++;
+                    int total = cart.Product.Price * cart.Quantity;
+                    string txt_class = "quantity_" + cart.Product.ProductId;
+                    totalCart += total;
+                    <tr>
+                        <td>@STT</td>
+                        <td>@cart.Product.Name</td>
+                        @*<td>@cart.Product.Category.Name</td>*@
+
+                        <td>@cart.Product.Price.ToString("#,##0") ₫</td>
+                        <td>
+                            <input type="number" value="@cart.Quantity" class="form-control @txt_class" min="1" style="height:25px; width:80px; text-align: center">
+                        </td>
+                        <td>
+                            <img src="~/images/products/@images.Find(el=>el.ProductId==cart.Product.ProductId).ImageName" style="width: 60px; height: 70px;" />
+                        </td>
+                        <td>@total.ToString("#,##0") ₫</td>
+                        <td>
+                            <a href="" data-id="@cart.Product.ProductId" class="updateCart btn btn-primary text-warning">Cập nhật</a>
+                            <a href="javascript:void(0)" onclick="carts.delete('@cart.Product.ProductId')" class="btn btn-danger">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <h4 class="text-center text-primary">Tổng giá trị hóa đơn: @totalCart.ToString("#,##0") ₫</h4>
+    <a href="javascript:void(0)" class="btn btn-success" onclick="ordercart.add(@dataCart)">Thanh toán</a>
+</div>
+@section Scripts{
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+
+    <script src="~/js/Cart.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+        $(".updateCart").click(function (event) {
+            event.preventDefault();
+            var quantity = $(".quantity_" + $(this).attr("data-id")).val();
+            console.log(quantity);
+            $.ajax({
+                type: "POST",
+                url:"@Url.Action("UpdateCart", "Cart")",
+                data: {
+                    id: $(this).attr("data-id"),
+                    quantity: quantity
+                },
+                success: function (result) {
+                    window.location.href = '@Url.Action("ListCart", "Cart")';
+                }
+            });
+        });
+    });
+    </script>
+}

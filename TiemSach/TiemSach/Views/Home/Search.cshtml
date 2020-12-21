@@ -1,0 +1,50 @@
+﻿@inject AppDbContext context
+@model List<Product>
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = $"Kết quả tìm kiếm: {ViewBag.KeyWord}";
+
+}
+
+
+<div class="row">
+
+    <div class="col-lg-9">
+        <div class="row">
+            @if (Model.Count>0)
+            {
+                @foreach (var product in Model)
+                {
+                    <div class="col-md-4 col-lg-3 col-sm-6 col-xl-3 col-6 card-group">
+                        <div class="card rounded my-3 bg-transparent py-2">
+                            <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId">
+                                @{
+                                    var productImages = (from e in context.Images
+                                                         where e.ProductId == product.ProductId
+                                                         select e).ToList();
+                                    if (productImages != null)
+                                    {
+                                        <img src="~/images/products/@productImages[0].ImageName" alt="@product.Name" style="height: 150px; max-width: 140px;" class="mx-auto d-block">
+                                    }
+                                }
+                            </a>
+                            <h6 class="card-body text-center">
+                                <a asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.ProductId" class="card-link">
+                                    @product.Name
+                                </a>
+                            </h6>
+
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <h5 style="color: red"> Không tìm thấy sản phẩm phù hợp</h5>
+            }
+        </div>
+        <a class="btn btn-facebook" asp-controller="Home" asp-action="Index"></a>
+  </div>
+</div>
+

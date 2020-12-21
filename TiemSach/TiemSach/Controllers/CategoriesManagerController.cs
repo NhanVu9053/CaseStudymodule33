@@ -47,7 +47,7 @@ namespace TiemSach.Controllers
             var category = categoryRepository.Get(id);
             if (category == null)
                 return View("~/Views/Error/PageNotFound.cshtml");
-            //ViewBag.NumberOfProducts = (from p in context.Products where p.CategoryId == id select p).ToList().Count;
+            ViewBag.NumberOfProducts = (from p in context.Products where p.CategoryId == id select p).ToList().Count;
             return View(category);
         }
 

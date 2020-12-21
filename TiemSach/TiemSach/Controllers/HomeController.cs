@@ -11,6 +11,7 @@ using TiemSach.Models.EF;
 using TiemSach.Models.OrderModel;
 using TiemSach.Models.ProductModel;
 using TiemSach.Models.UserModel;
+using X.PagedList;
 
 namespace TiemSach.Controllers
 {
@@ -48,11 +49,14 @@ namespace TiemSach.Controllers
             this.orderDetailRepository = orderDetailRepository;
         }
 
-        public IActionResult Index()
-        {       
+        public IActionResult Index(int? page)
+        {
+            int pageSize = 12;
+            int pageNumber = (page ?? 1);
             ViewBag.Categories = categoryRepository.Get().ToList();
-            ViewBag.Products = productRepository.Get().ToList();          
-            return View();
+            ViewBag.Products = productRepository.Get().ToList();
+            var result = productRepository.Get().ToPagedList(pageNumber, pageSize);
+            return View(result);
         }
 
         public IActionResult ViewProduct(string id)
@@ -92,7 +96,11 @@ namespace TiemSach.Controllers
             return View(products.Skip(page * 12 - 12).Take(12).ToList());
         }
 
-       
+        public IActionResult Search(string search)
+        {
+            var data = productRepository.Search(search);
+            return View(data);
+        }
 
     }
 }

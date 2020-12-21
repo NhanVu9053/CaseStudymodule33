@@ -17,6 +17,7 @@ namespace TiemSach.ViewModel.OrderViewModel
 
         [Required(ErrorMessage = "Nhập vào địa chỉ giao hàng!")]
         public string Address { get; set; }
+        public int Quantity { get; set; }
 
         public string ProductId { get; set; }
     }
